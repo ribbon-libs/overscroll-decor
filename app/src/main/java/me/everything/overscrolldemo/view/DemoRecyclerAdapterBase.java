@@ -2,8 +2,10 @@ package me.everything.overscrolldemo.view;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -22,12 +24,18 @@ public abstract class DemoRecyclerAdapterBase extends RecyclerView.Adapter<Recyc
             super(inflater.inflate(resId, parent, false));
         }
 
-        public void init(DemoItem item) {
+        public void init(final DemoItem item) {
             TextView textView = getTextView();
             textView.setText(item.getColorName());
 
             int color = item.getColor();
             textView.setBackgroundColor(color);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(itemView.getContext(), "" + item.getColorName(), Toast.LENGTH_LONG).show();
+                }
+            });
         }
 
         private TextView getTextView() {

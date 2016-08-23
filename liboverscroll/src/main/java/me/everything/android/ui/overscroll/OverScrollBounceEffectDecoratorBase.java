@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.util.Log;
 import android.util.Property;
 import android.view.MotionEvent;
 import android.view.View;
@@ -73,6 +74,17 @@ public abstract class OverScrollBounceEffectDecoratorBase implements IOverScroll
 
     protected IOverScrollStateListener mStateListener = new OverScrollStateListenerStub();
     protected IOverScrollUpdateListener mUpdateListener = new OverScrollUpdateListenerStub();
+
+    protected boolean isVertical;
+    private float touchSlop, actionDownX, actionDownY;
+
+    public void setVertical(boolean vertical) {
+        isVertical = vertical;
+    }
+
+    public void setTouchSlop(float touchSlop) {
+        this.touchSlop = touchSlop;
+    }
 
     /**
      * When in over-scroll mode, keep track of dragging velocity to provide a smooth slow-down
@@ -421,7 +433,22 @@ public abstract class OverScrollBounceEffectDecoratorBase implements IOverScroll
     public boolean onTouch(View v, MotionEvent event) {
 
         switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                actionDownX = event.getX();
+                actionDownY = event.getY();
+                break;
             case MotionEvent.ACTION_MOVE:
+                if (isVertical) {
+                    float offsetY = event.getY() - actionDownY;
+                    if (Math.abs(offsetY) < touchSlop) {
+                        break;
+                    }
+                } else {
+                    float offsetX = event.getX() - actionDownX;
+                    if (Math.abs(offsetX) < touchSlop) {
+                        break;
+                    }
+                }
                 return mCurrentState.handleMoveTouchEvent(event);
 
             case MotionEvent.ACTION_CANCEL:

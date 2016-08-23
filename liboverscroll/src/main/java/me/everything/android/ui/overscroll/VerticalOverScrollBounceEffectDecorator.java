@@ -2,6 +2,7 @@ package me.everything.android.ui.overscroll;
 
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 
 import me.everything.android.ui.overscroll.adapters.IOverScrollDecoratorAdapter;
 
@@ -74,7 +75,8 @@ public class VerticalOverScrollBounceEffectDecorator extends OverScrollBounceEff
     public VerticalOverScrollBounceEffectDecorator(IOverScrollDecoratorAdapter viewAdapter,
                                                    float touchDragRatioFwd, float touchDragRatioBck, float decelerateFactor) {
         super(viewAdapter, decelerateFactor, touchDragRatioFwd, touchDragRatioBck);
-
+        setVertical(true);
+        setTouchSlop(ViewConfiguration.get(mViewAdapter.getView().getContext()).getScaledTouchSlop());
         // Some setup on the view itself.
         mViewAdapter.getView().setOnTouchListener(this);
         mViewAdapter.getView().setOverScrollMode(View.OVER_SCROLL_NEVER);
